@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+  thymeleaf:
+    cache: false
+  mvc:
+    format:
+      date: yyyy-MM-dd
+logging:
+  level:
+    org:
+      springframework:
+        web: debug

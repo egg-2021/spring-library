@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="Página de ejemplo de Spring Boot + Thymeleaf para el curso de Egg" name="description"/>
+    <meta content="Cristian Solís" name="author"/>
+    <title>Autores - Egg</title>
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet" th:href="@{/assets/bootstrap.min.css}"/>
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div class="container mt-5 main">
+    <div class="alert alert-success" th:if="${exito}" th:text="${exito}"></div>
+    <div class="alert alert-danger col-xl-6" th:if="${error}" th:text="${error}"></div>
+    <h1>Listado de autores</h1>
+    <hr class="mb-4"/>
+    <div th:if="${autores.isEmpty()}">
+        <h5>Todavía no hay autores cargados. <a th:href="@{/autor/crear}">Cargar autor.</a></h5>
+    </div>
+    <div class="table-responsive" th:unless="${autores.isEmpty()}">
+        <a th:href="@{/autor/crear}" class="btn btn-success mb-4">Ingresar autor</a>
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark text-center">
+            <tr>
+                <th class="col-md-4">Nombre</th>
+                <th class="col-md-2">Creación</th>
+                <th class="col-md-2">Modificación</th>
+                <th class="col-md-3">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="autor : ${autores}">
+                <td class="col-md-4" th:text="|${autor.nombre} ${autor.apellido}|"></td>
+                <td class="col-md-2" th:text="${#temporals.format(autor.creacion, 'dd-MM-yyyy HH:mm')}"></td>
+                <td class="col-md-2"
+                    th:text="${#temporals.format(autor.modificacion, 'dd-MM-yyyy HH:mm')}"></td>
+                <td class="col-md-3">
+                    <div class="d-flex justify-content-around">
+                        <a class="btn btn-warning btn-sm" th:href="@{/autor/editar/__${autor.id}__}">Editar</a>
+                        <form method="post"
+                              th:action="${autor.alta} ? @{/autor/eliminar/__${autor.id}__} : @{/autor/habilitar/__${autor.id}__}">
+                            <button th:class="${autor.alta} ? 'btn btn-danger btn-sm' : 'btn btn-primary btn-sm'"
+                                    type="submit" th:text="${autor.alta} ? 'Eliminar' : 'Habilitar'">
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- JS -->
+<script th:src="@{/assets/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
