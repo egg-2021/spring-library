@@ -25,6 +25,9 @@ public class UsuarioService implements UserDetailsService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private BCryptPasswordEncoder encoder;
 
     private String mensaje = "No existe ningún usuario asociado con el ID %s";
@@ -47,6 +50,7 @@ public class UsuarioService implements UserDetailsService {
             usuario.setRol(dto.getRol());
         }
         usuario.setAlta(true);
+        emailService.enviarThread(dto.getCorreo());
         usuarioRepository.save(usuario);
     }
 
