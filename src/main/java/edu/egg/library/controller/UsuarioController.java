@@ -13,10 +13,11 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Controller
-@PreAuthorize("hasRole('ADMIN')")
+// @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/usuario")
 public class UsuarioController {
 
@@ -55,7 +56,11 @@ public class UsuarioController {
     }
 
     @GetMapping("/editar/{id}")
-    public ModelAndView editar(@PathVariable Integer id, HttpServletRequest request, RedirectAttributes attributes) {
+    public ModelAndView editar(@PathVariable Integer id, HttpServletRequest request, HttpSession session, RedirectAttributes attributes) {
+        if (!session.getAttribute("id").equals(id)) {
+            return new ModelAndView(new RedirectView("/home"));
+        }
+
         ModelAndView mav = new ModelAndView("usuario-formulario");
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
 

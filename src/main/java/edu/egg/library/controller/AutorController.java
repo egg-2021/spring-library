@@ -6,6 +6,7 @@ import edu.egg.library.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -76,11 +77,11 @@ public class AutorController {
     }
 
     @PostMapping("/guardar")
-    public RedirectView guardar(@ModelAttribute Autor autor, RedirectAttributes attributes) {
+    public RedirectView guardar(@RequestParam MultipartFile foto, @ModelAttribute Autor autor, RedirectAttributes attributes) {
         RedirectView redirectView = new RedirectView("/autor");
 
         try {
-            autorService.crear(autor);
+            autorService.crear(autor, foto);
             attributes.addFlashAttribute("exito", "La creación ha sido realizada satisfactoriamente");
         } catch (SpringException e) {
             attributes.addFlashAttribute("autor", autor);
@@ -92,11 +93,11 @@ public class AutorController {
     }
 
     @PostMapping("/modificar")
-    public RedirectView modificar(@ModelAttribute Autor autor, RedirectAttributes attributes) {
+    public RedirectView modificar(@RequestParam MultipartFile foto, @ModelAttribute Autor autor, RedirectAttributes attributes) {
         RedirectView redirectView = new RedirectView("/autor");
 
         try {
-            autorService.modificar(autor);
+            autorService.modificar(autor, foto);
             attributes.addFlashAttribute("exito", "La actualización ha sido realizada satisfactoriamente");
         } catch (SpringException e) {
             attributes.addFlashAttribute("autor", autor);

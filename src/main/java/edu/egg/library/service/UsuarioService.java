@@ -14,7 +14,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.condition.RequestConditionHolder;
 
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,6 +93,15 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new UsernameNotFoundException("No existe un usuario asociado al correo ingresado"));
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().name());
+
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
+
+        session.setAttribute("id", usuario.getId());
+        session.setAttribute("nombre", usuario.getNombre());
+        session.setAttribute("apellido", usuario.getApellido());
+        session.setAttribute("rol", usuario.getRol().name());
+
         return new User(usuario.getCorreo(), usuario.getClave(), Collections.singletonList(authority));
     }
 }

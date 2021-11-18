@@ -21,7 +21,7 @@
     <div class="alert alert-danger col-xl-6" th:if="${error}" th:text="${error}"></div>
 
     <form autocomplete="off" class="needs-validation mb-4" id="formulario" method="POST" novalidate
-          th:action="@{/autor/__${action}__}" th:object="${autor}">
+          th:action="@{/autor/__${action}__}" th:object="${autor}" enctype="multipart/form-data">
 
         <input th:field="*{id}" type="hidden"/>
 
@@ -36,6 +36,11 @@
                    required/>
             <label for="apellido">Apellido</label>
             <div class="invalid-feedback">El apellido es obligatorio</div>
+        </div>
+
+        <div class="mb-3 col-xl-6">
+            <label for="foto">Cargar foto</label>
+            <input class="form-control mt-2" type="file" name="foto" accept="image/*">
         </div>
 
         <div class="row">

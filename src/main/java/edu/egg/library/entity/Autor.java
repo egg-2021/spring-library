@@ -35,6 +35,8 @@ public class Autor {
     @LastModifiedDate
     private LocalDateTime modificacion;
 
+    private String image;
+
     private Boolean alta;
 
     @Override
