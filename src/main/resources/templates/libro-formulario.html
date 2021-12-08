@@ -7,9 +7,7 @@
     <meta content="Página de ejemplo de Spring Boot + Thymeleaf para el curso de Egg" name="description"/>
     <meta content="Cristian Solís" name="author"/>
     <title th:text="|${title} - Egg|"></title>
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap.min.css}"/>
-    <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
@@ -20,63 +18,67 @@
     <hr class="mb-4 col-xl-12"/>
     <div class="alert alert-danger col-xl-6" th:if="${error}" th:text="${error}"></div>
 
-    <form autocomplete="off" class="needs-validation" id="formulario" method="POST"
-          novalidate th:action="@{/libro/__${action}__}" th:object="${libro}">
+    <form class="mb-4" th:action="@{/libro/__${action}__}" th:object="${libro}" method="POST" autocomplete="off">
 
         <input th:field="*{id}" type="hidden"/>
 
         <div class="form-floating mb-3 col-xl-6">
             <input class="form-control" id="isbn" placeholder="ISBN" th:field="*{isbn}"
-                   th:readonly="${libro.id}"
-                   type="text" required/>
+                   th:readonly="${libro.id}" type="text"/>
             <label for="isbn">ISBN</label>
-            <div class="invalid-feedback">El ISBN es obligatorio</div>
+            <div class="error text-start" th:if="${#fields.hasErrors('isbn')}"
+                 th:errors="*{isbn}"></div>
         </div>
 
         <div class="form-floating mb-3 col-xl-6">
-            <input class="form-control" id="titulo" placeholder="Título" th:field="*{titulo}" type="text" required/>
+            <input class="form-control" id="titulo" placeholder="Título" th:field="*{titulo}" type="text"/>
             <label for="titulo">Título</label>
-            <div class="invalid-feedback">El título es obligatorio</div>
+            <div class="error text-start" th:if="${#fields.hasErrors('titulo')}"
+                 th:errors="*{titulo}"></div>
         </div>
 
         <div class="form-floating mb-3 col-xl-6">
-            <input class="form-control" id="anio" placeholder="Año" th:field="*{anio}" type="number" required/>
+            <input class="form-control" id="anio" placeholder="Año" th:field="*{anio}" type="number"/>
             <label for="anio">Año</label>
-            <div class="invalid-feedback">El año es obligatorio</div>
+            <div class="error text-start" th:if="${#fields.hasErrors('anio')}"
+                 th:errors="*{anio}"></div>
         </div>
 
         <div class="form-floating mb-3 col-xl-6">
-            <input class="form-control" id="ejemplares" placeholder="Ejemplares" th:field="*{ejemplares}" type="number"
-                   required/>
+            <input class="form-control" id="ejemplares" placeholder="Ejemplares" th:field="*{ejemplares}"
+                   type="number"/>
             <label for="ejemplares">Ejemplares</label>
-            <div class="invalid-feedback">La cantidad de ejemplares es obligatoria</div>
+            <div class="error text-start" th:if="${#fields.hasErrors('ejemplares')}"
+                 th:errors="*{ejemplares}"></div>
         </div>
 
         <div class="form-floating mb-3 col-xl-6">
-            <input class="form-control" id="prestados" placeholder="Prestados" th:field="*{prestados}" type="number"
-                   required/>
+            <input class="form-control" id="prestados" placeholder="Prestados" th:field="*{prestados}" type="number"/>
             <label for="prestados">Prestados</label>
-            <div class="invalid-feedback">La cantidad de ejemplares prestados es obligatoria</div>
+            <div class="error text-start" th:if="${#fields.hasErrors('prestados')}"
+                 th:errors="*{prestados}"></div>
         </div>
 
         <div class="form-floating mb-3 col-xl-6">
-            <select aria-label="Elegir autor" class="form-select" id="autor" th:field="*{autor}" required>
+            <select aria-label="Elegir autor" class="form-select" id="autor" th:field="*{autor}">
                 <option selected value="">Elegir autor</option>
                 <option th:each="autor : ${autores}" th:text="|${autor.nombre} ${autor.apellido}|"
                         th:value="${autor.id}"></option>
             </select>
             <label for="autor">Autor</label>
-            <div class="invalid-feedback">El autor es obligatorio</div>
+            <div class="error text-start" th:if="${#fields.hasErrors('autor')}"
+                 th:errors="*{autor}"></div>
         </div>
 
         <div class="form-floating mb-3 col-xl-6">
-            <select aria-label="Elegir editorial" class="form-select" id="editorial" th:field="*{editorial}" required>
+            <select aria-label="Elegir editorial" class="form-select" id="editorial" th:field="*{editorial}">
                 <option selected value="">Elegir editorial</option>
                 <option th:each="editorial : ${editoriales}" th:text="${editorial.nombre}"
                         th:value="${editorial.id}"></option>
             </select>
             <label for="editorial">Editorial</label>
-            <div class="invalid-feedback">La editorial es obligatoria</div>
+            <div class="error text-start" th:if="${#fields.hasErrors('editorial')}"
+                 th:errors="*{editorial}"></div>
         </div>
 
         <div class="row">
@@ -89,23 +91,6 @@
 </div>
 
 <footer th:replace="fragments/footer :: footer"></footer>
-
-<!-- JS -->
 <script th:src="@{/assets/bootstrap.bundle.min.js}"></script>
-<script>
-    (() => {
-        "use strict";
-
-        const form = document.getElementById("formulario");
-        form.addEventListener("submit", (event) => {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-
-            form.classList.add("was-validated");
-        }, false);
-    })()
-</script>
 </body>
 </html>

@@ -7,6 +7,7 @@ import edu.egg.library.service.EditorialService;
 import edu.egg.library.service.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
@@ -88,35 +90,57 @@ public class LibroController {
     }
 
     @PostMapping("/guardar")
-    public RedirectView guardar(@ModelAttribute Libro libro, RedirectAttributes attributes) {
-        RedirectView redirectView = new RedirectView("/libro");
+    public ModelAndView guardar(@Valid @ModelAttribute Libro libro, BindingResult result, RedirectAttributes attributes) {
+        ModelAndView mav = new ModelAndView();
+
+        if (result.hasErrors()) {
+            mav.addObject("autores", autorService.buscarTodos());
+            mav.addObject("editoriales", editorialService.buscarTodos());
+            mav.addObject("title", "Crear Libro");
+            mav.addObject("action", "guardar");
+            mav.addObject("libro", libro);
+            mav.setViewName("libro-formulario");
+            return mav;
+        }
 
         try {
             libroService.crear(libro);
             attributes.addFlashAttribute("exito", "La creación ha sido realizada satisfactoriamente");
+            mav.setViewName("redirect:/libro");
         } catch (SpringException e) {
             attributes.addFlashAttribute("libro", libro);
             attributes.addFlashAttribute("error", e.getMessage());
-            redirectView.setUrl("/libro/crear");
+            mav.setViewName("redirect:/libro/crear");
         }
 
-        return redirectView;
+        return mav;
     }
 
     @PostMapping("/modificar")
-    public RedirectView modificar(@ModelAttribute Libro libro, RedirectAttributes attributes) {
-        RedirectView redirectView = new RedirectView("/libro");
+    public ModelAndView modificar(@Valid @ModelAttribute Libro libro, BindingResult result, RedirectAttributes attributes) {
+        ModelAndView mav = new ModelAndView();
+
+        if (result.hasErrors()) {
+            mav.addObject("autores", autorService.buscarTodos());
+            mav.addObject("editoriales", editorialService.buscarTodos());
+            mav.addObject("title", "Editar Libro");
+            mav.addObject("action", "modificar");
+            mav.addObject("libro", libro);
+            mav.setViewName("libro-formulario");
+            return mav;
+        }
 
         try {
             libroService.modificar(libro);
             attributes.addFlashAttribute("exito", "La actualización ha sido realizada satisfactoriamente");
+            mav.setViewName("redirect:/libro");
         } catch (SpringException e) {
             attributes.addFlashAttribute("libro", libro);
             attributes.addFlashAttribute("error", e.getMessage());
-            redirectView.setUrl("/libro/editar/" + libro.getId());
+            mav.setViewName("redirect:/libro/editar/" + libro.getId());
         }
 
-        return redirectView;
+        return mav;
     }
 
     @PostMapping("/habilitar/{id}")

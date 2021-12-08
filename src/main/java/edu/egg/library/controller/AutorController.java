@@ -5,6 +5,7 @@ import edu.egg.library.exception.SpringException;
 import edu.egg.library.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
@@ -77,35 +79,53 @@ public class AutorController {
     }
 
     @PostMapping("/guardar")
-    public RedirectView guardar(@RequestParam MultipartFile foto, @ModelAttribute Autor autor, RedirectAttributes attributes) {
-        RedirectView redirectView = new RedirectView("/autor");
+    public ModelAndView guardar(@RequestParam MultipartFile foto, @Valid @ModelAttribute Autor autor, BindingResult result, RedirectAttributes attributes) {
+        ModelAndView mav = new ModelAndView();
+
+        if (result.hasErrors()) {
+            mav.addObject("title", "Crear Autor");
+            mav.addObject("action", "guardar");
+            mav.addObject("autor", autor);
+            mav.setViewName("autor-formulario");
+            return mav;
+        }
 
         try {
             autorService.crear(autor, foto);
             attributes.addFlashAttribute("exito", "La creación ha sido realizada satisfactoriamente");
+            mav.setViewName("redirect:/autor");
         } catch (SpringException e) {
             attributes.addFlashAttribute("autor", autor);
             attributes.addFlashAttribute("error", e.getMessage());
-            redirectView.setUrl("/autor/crear");
+            mav.setViewName("redirect:/autor/crear");
         }
 
-        return redirectView;
+        return mav;
     }
 
     @PostMapping("/modificar")
-    public RedirectView modificar(@RequestParam MultipartFile foto, @ModelAttribute Autor autor, RedirectAttributes attributes) {
-        RedirectView redirectView = new RedirectView("/autor");
+    public ModelAndView modificar(@RequestParam MultipartFile foto, @Valid @ModelAttribute Autor autor, BindingResult result, RedirectAttributes attributes) {
+        ModelAndView mav = new ModelAndView();
+
+        if (result.hasErrors()) {
+            mav.addObject("title", "Editar Autor");
+            mav.addObject("action", "modificar");
+            mav.addObject("autor", autor);
+            mav.setViewName("autor-formulario");
+            return mav;
+        }
 
         try {
             autorService.modificar(autor, foto);
             attributes.addFlashAttribute("exito", "La actualización ha sido realizada satisfactoriamente");
+            mav.setViewName("redirect:/autor");
         } catch (SpringException e) {
             attributes.addFlashAttribute("autor", autor);
             attributes.addFlashAttribute("error", e.getMessage());
-            redirectView.setUrl("/autor/editar/" + autor.getId());
+            mav.setViewName("redirect:/autor/editar/" + autor.getId());
         }
 
-        return redirectView;
+        return mav;
     }
 
     @PostMapping("/habilitar/{id}")

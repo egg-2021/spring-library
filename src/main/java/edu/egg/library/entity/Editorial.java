@@ -1,6 +1,7 @@
 package edu.egg.library.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class Editorial {
     @GeneratedValue
     private Integer id;
 
+    @NotBlank(message = "El nombre es obligatorio")
     @Column(nullable = false, length = 50)
     private String nombre;
 

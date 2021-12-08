@@ -5,6 +5,7 @@ import edu.egg.library.exception.SpringException;
 import edu.egg.library.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Map;
 
@@ -69,20 +71,27 @@ public class PrincipalController {
     }
 
     @PostMapping("/registro")
-    public RedirectView signup(@ModelAttribute Usuario usuario, HttpServletRequest request, RedirectAttributes attributes) {
-        RedirectView redirectView = new RedirectView("/login");
+    public ModelAndView signup(@Valid @ModelAttribute Usuario usuario, BindingResult result, HttpServletRequest request, RedirectAttributes attributes) {
+        ModelAndView mav = new ModelAndView();
+
+        if (result.hasErrors()) {
+            mav.addObject("usuario", usuario);
+            mav.setViewName("signup");
+            return mav;
+        }
 
         try {
             usuarioService.crear(usuario);
             request.login(usuario.getCorreo(), usuario.getClave());
+            mav.setViewName("redirect:/home");
         } catch (SpringException e) {
             attributes.addFlashAttribute("usuario", usuario);
             attributes.addFlashAttribute("error", e.getMessage());
-            redirectView.setUrl("/signup");
+            mav.setViewName("redirect:/signup");
         } catch (ServletException e) {
             attributes.addFlashAttribute("error", "Error al realizar auto-login");
         }
 
-        return redirectView;
+        return mav;
     }
 }

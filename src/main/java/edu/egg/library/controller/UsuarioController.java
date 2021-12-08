@@ -6,6 +6,8 @@ import edu.egg.library.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
@@ -83,35 +86,53 @@ public class UsuarioController {
     }
 
     @PostMapping("/guardar")
-    public RedirectView guardar(@ModelAttribute Usuario usuario, RedirectAttributes attributes) {
-        RedirectView redirectView = new RedirectView("/usuario");
+    public ModelAndView guardar(@Valid @ModelAttribute Usuario usuario, BindingResult result, RedirectAttributes attributes) {
+        ModelAndView mav = new ModelAndView();
+
+        if (result.hasErrors()) {
+            mav.addObject("title", "Crear Usuario");
+            mav.addObject("action", "guardar");
+            mav.addObject("usuario", usuario);
+            mav.setViewName("usuario-formulario");
+            return mav;
+        }
 
         try {
             usuarioService.crear(usuario);
             attributes.addFlashAttribute("exito", "La creación ha sido realizada satisfactoriamente");
+            mav.setViewName("redirect:/usuario");
         } catch (SpringException e) {
             attributes.addFlashAttribute("usuario", usuario);
             attributes.addFlashAttribute("error", e.getMessage());
-            redirectView.setUrl("/usuario/crear");
+            mav.setViewName("redirect:/usuario/crear");
         }
 
-        return redirectView;
+        return mav;
     }
 
     @PostMapping("/modificar")
-    public RedirectView modificar(@ModelAttribute Usuario usuario, RedirectAttributes attributes) {
-        RedirectView redirectView = new RedirectView("/usuario");
+    public ModelAndView modificar(@Valid @ModelAttribute Usuario usuario, BindingResult result, RedirectAttributes attributes) {
+        ModelAndView mav = new ModelAndView();
+
+        if (result.hasErrors()) {
+            mav.addObject("title", "Editar Usuario");
+            mav.addObject("action", "modificar");
+            mav.addObject("usuario", usuario);
+            mav.setViewName("usuario-formulario");
+            return mav;
+        }
 
         try {
             usuarioService.modificar(usuario);
             attributes.addFlashAttribute("exito", "La actualización ha sido realizada satisfactoriamente");
+            mav.setViewName("redirect:/usuario");
         } catch (SpringException e) {
             attributes.addFlashAttribute("usuario", usuario);
             attributes.addFlashAttribute("error", e.getMessage());
-            redirectView.setUrl("/usuario/editar/" + usuario.getId());
+            mav.setViewName("redirect:/usuario/editar/" + usuario.getId());
         }
 
-        return redirectView;
+        return mav;
     }
 
     @PostMapping("/habilitar/{id}")

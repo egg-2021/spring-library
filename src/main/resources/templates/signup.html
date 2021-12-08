@@ -7,9 +7,7 @@
     <meta content="Página de ejemplo de Spring Boot + Thymeleaf para el curso de Egg" name="description"/>
     <meta content="Cristian Solís" name="author"/>
     <title>Sign Up - Egg</title>
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" th:href="@{/assets/bootstrap.min.css}"/>
-    <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
@@ -42,31 +40,34 @@
                     <h3>Registro</h3>
                 </div>
                 <div class="card-body">
-                    <form id="formulario" class="needs-validation mb-4" th:action="@{/registro}" th:object="${usuario}"
-                          method="POST" autocomplete="off" novalidate>
+                    <form class="mb-4" th:action="@{/registro}" th:object="${usuario}" method="POST" autocomplete="off">
 
                         <div class="form-group mb-3">
-                            <input id="nombre" type="text" th:field="*{nombre}" placeholder="Nombre"
-                                   class="form-control" required/>
-                            <div class="invalid-feedback text-start">El nombre es obligatorio</div>
+                            <input type="text" th:field="*{nombre}" placeholder="Nombre"
+                                   class="form-control"/>
+                            <div class="error text-start" th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}"></div>
                         </div>
 
                         <div class="form-group mb-3">
-                            <input id="apellido" type="text" th:field="*{apellido}" placeholder="Apellido"
-                                   class="form-control" required/>
-                            <div class="invalid-feedback text-start">El apellido es obligatorio</div>
+                            <input type="text" th:field="*{apellido}" placeholder="Apellido"
+                                   class="form-control"/>
+                            <div class="error text-start" th:if="${#fields.hasErrors('apellido')}"
+                                 th:errors="*{apellido}"></div>
                         </div>
 
                         <div class="form-group mb-3">
-                            <input id="correo" type="email" th:field="*{correo}" placeholder="Correo"
-                                   class="form-control" required/>
-                            <div class="invalid-feedback text-start">El correo es obligatorio</div>
+                            <input type="email" th:field="*{correo}" placeholder="Correo"
+                                   class="form-control"/>
+                            <div class="error text-start" th:if="${#fields.hasErrors('correo')}"
+                                 th:errors="*{correo}"></div>
                         </div>
 
                         <div class="form-group mb-3">
-                            <input id="clave" type="password" th:field="*{clave}" placeholder="Contraseña"
-                                   class="form-control" required/>
-                            <div class="invalid-feedback text-start">La contraseña es obligatoria</div>
+                            <input type="password" th:field="*{clave}" placeholder="Contraseña"
+                                   class="form-control"/>
+                            <div class="error text-start" th:if="${#fields.hasErrors('clave')}"
+                                 th:errors="*{clave}"></div>
                         </div>
 
                         <div class="form-group d-grid gap-2">
@@ -80,22 +81,6 @@
 </div>
 
 <footer th:replace="fragments/footer :: footer"></footer>
-<!-- JS -->
 <script th:src="@{/assets/bootstrap.bundle.min.js}"></script>
-<script>
-    (() => {
-        "use strict";
-
-        const form = document.getElementById("formulario");
-        form.addEventListener("submit", (event) => {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-
-            form.classList.add("was-validated");
-        }, false);
-    })()
-</script>
 </body>
 </html>

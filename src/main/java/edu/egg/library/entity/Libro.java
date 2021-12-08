@@ -1,6 +1,8 @@
 package edu.egg.library.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,18 +24,23 @@ public class Libro {
     @GeneratedValue
     private Integer id;
 
+    @NotNull(message = "El ISBN es obligatorio")
     @Column(nullable = false, unique = true)
     private Long isbn;
 
+    @NotBlank(message = "El título es obligatorio")
     @Column(nullable = false, length = 75)
     private String titulo;
 
+    @NotNull(message = "El año es obligatorio")
     @Column(nullable = false)
     private Integer anio;
 
+    @NotNull(message = "La cantidad de ejemplares es obligatoria")
     @Column(nullable = false)
     private Integer ejemplares;
 
+    @NotNull(message = "La cantidad de prestados es obligatoria")
     @Column(nullable = false)
     private Integer prestados;
 
@@ -47,10 +54,12 @@ public class Libro {
     @LastModifiedDate
     private LocalDateTime modificacion;
 
+    @NotNull(message = "El autor no puede ser nulo")
     @ManyToOne
     @JoinColumn(nullable = false)
     private Autor autor;
 
+    @NotNull(message = "La editorial no puede ser nula")
     @ManyToOne
     @JoinColumn(nullable = false)
     private Editorial editorial;
