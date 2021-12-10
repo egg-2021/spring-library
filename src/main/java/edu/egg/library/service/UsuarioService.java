@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.mvc.condition.RequestConditionHolder;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
@@ -48,8 +47,6 @@ public class UsuarioService implements UserDetailsService {
         usuario.setClave(encoder.encode(dto.getClave()));
         if (usuarioRepository.findAll().isEmpty()) {
             usuario.setRol(Rol.ADMIN);
-        } else if (dto.getRol() == null) {
-            usuario.setRol(Rol.USER);
         } else {
             usuario.setRol(dto.getRol());
         }

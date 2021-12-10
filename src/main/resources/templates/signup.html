@@ -63,6 +63,8 @@
                                  th:errors="*{correo}"></div>
                         </div>
 
+                        <input type="hidden" th:field="*{rol}">
+
                         <div class="form-group mb-3">
                             <input type="password" th:field="*{clave}" placeholder="Contraseña"
                                    class="form-control"/>

@@ -1,6 +1,7 @@
 package edu.egg.library.controller;
 
 import edu.egg.library.entity.Usuario;
+import edu.egg.library.enums.Rol;
 import edu.egg.library.exception.SpringException;
 import edu.egg.library.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +64,9 @@ public class PrincipalController {
             mav.addObject("error", flashMap.get("error"));
             mav.addObject("usuario", flashMap.get("usuario"));
         } else {
-            mav.addObject("usuario", new Usuario());
+            Usuario usuario = new Usuario();
+            usuario.setRol(Rol.USER);
+            mav.addObject("usuario", usuario);
         }
 
         return mav;
